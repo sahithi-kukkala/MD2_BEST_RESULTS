@@ -19,15 +19,88 @@
             width: 100%;
             height: auto;
             border: 1px solid #ccc;
+            cursor: pointer;
         }
         h1 {
             color: #333;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 90%;  /* Increased width */
+            max-width: 800px;  /* Set a new max width */
+            max-height: 90%;  /* Set max height to maintain aspect ratio */
+            object-fit: contain;
+        }
+
+        .modal-caption {
+            color: #ccc;
+            font-size: 18px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Navigation buttons */
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            padding: 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.3s;
+        }
+        .prev {
+            left: 0;
+        }
+        .next {
+            right: 0;
+        }
+        .prev:hover, .next:hover {
+            color: #bbb;
+        }
+
+        /* Close button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <h1>Document Layout Analysis - Example Results</h1>
+
+    <!-- Image gallery -->
     <div class="gallery">
         <img src="https://raw.githubusercontent.com/sahithi-kukkala/MD2_BEST_RESULTS/main/result_images/010201_00235.jpg" alt="Image 1">
         <img src="https://raw.githubusercontent.com/sahithi-kukkala/MD2_BEST_RESULTS/main/result_images/010602_00217.jpg" alt="Image 2">
@@ -54,7 +127,84 @@
         <img src="https://raw.githubusercontent.com/sahithi-kukkala/MD2_BEST_RESULTS/main/result_images/5a6688d813c1b084dec0ad5c7b566e8ec7bfb1f623163b0e468e9110a482940f.png" alt="Image 23">
         <img src="https://raw.githubusercontent.com/sahithi-kukkala/MD2_BEST_RESULTS/main/result_images/74e5f0f887c3dc6c58f0bca6b159e502b1baa5b1f427df8c270ab717e681fa2c.png" alt="Image 24">
         <img src="https://raw.githubusercontent.com/sahithi-kukkala/MD2_BEST_RESULTS/main/result_images/8a69739fecc3bce80383827885697c381d9af180a34346e8c3766ec0be720067.png" alt="Image 25">
+        <!-- Add more images as needed -->
     </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-caption" id="caption"></div>
+        <a class="prev">&#10094;</a>
+        <a class="next">&#10095;</a>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the modal image and caption
+        var modalImg = document.getElementById("modalImage");
+        var captionText = document.getElementById("caption");
+
+        // Array to hold all the images
+        var images = document.querySelectorAll(".gallery img");
+        var currentIndex = 0; // Track the current image index
+
+        // Open modal and show the clicked image
+        images.forEach(function (img, index) {
+            img.onclick = function () {
+                currentIndex = index;
+                openModal(currentIndex);
+            };
+        });
+
+        function openModal(index) {
+            modal.style.display = "block";
+            modalImg.src = images[index].src;
+            captionText.innerHTML = images[index].alt;
+        }
+
+        // Get the close button
+        var span = document.getElementsByClassName("close")[0];
+
+        // Close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        // Navigation functionality
+        var prev = document.querySelector(".prev");
+        var next = document.querySelector(".next");
+
+        prev.onclick = function() {
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
+            openModal(currentIndex);
+        };
+
+        next.onclick = function() {
+            currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
+            openModal(currentIndex);
+        };
+
+        // Keyboard navigation
+        document.onkeydown = function(event) {
+            if (event.key === "ArrowRight") {
+                next.onclick();
+            } else if (event.key === "ArrowLeft") {
+                prev.onclick();
+            } else if (event.key === "Escape") {
+                modal.style.display = "none";
+            }
+        };
+    </script>
 
 </body>
 </html>
